@@ -1,10 +1,7 @@
 package io.github.aelpecyem.la_cucaracha.mixin;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.BrewingStandScreenHandler;
-
 import io.github.aelpecyem.la_cucaracha.LaCucaracha;
-import org.checkerframework.checker.units.qual.A;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

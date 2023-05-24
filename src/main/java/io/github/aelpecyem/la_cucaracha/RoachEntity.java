@@ -13,13 +13,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.NoPenaltyTargeting;
-import net.minecraft.entity.ai.goal.EscapeDangerGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.PounceAtTargetGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.ai.goal.WanderAroundGoal;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.DefaultAttributeContainer.Builder;
@@ -174,7 +169,7 @@ public class RoachEntity extends PathAwareEntity {
 				return isAggressive() && super.canStart();
 			}
 		}.setGroupRevenge());
-		this.targetSelector.add(2, new TargetGoal<>(this, LivingEntity.class, true, target ->
+		this.targetSelector.add(2, new ActiveTargetGoal(this, LivingEntity.class, true, target ->
 			!(target instanceof RoachEntity) &&
 				((specificTarget != null && target.getUuid().equals(specificTarget)) || (target instanceof PlayerEntity && target.isHolding(ItemStack::isFood)))) {
 			@Override
@@ -498,7 +493,7 @@ public class RoachEntity extends PathAwareEntity {
 	public void onPlayerCollision(PlayerEntity player) {
 		super.onPlayerCollision(player);
 		if (!world.isClient) {
-			player.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 60, 0));
+			player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 60, 0));
 		}
 	}
 

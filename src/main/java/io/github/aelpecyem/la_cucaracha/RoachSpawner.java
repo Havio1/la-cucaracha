@@ -1,23 +1,26 @@
 package io.github.aelpecyem.la_cucaracha;
 
-import net.minecraft.data.server.tag.StructureTags;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.tag.StructureTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.SpawnHelper;
-import net.minecraft.world.gen.Spawner;
 import net.minecraft.world.poi.PointOfInterestStorage;
+import net.minecraft.world.poi.PointOfInterestType;
 import net.minecraft.world.poi.PointOfInterestTypes;
+import net.minecraft.world.spawner.Spawner;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.random.RandomGenerator;
 
 public class RoachSpawner implements Spawner {
 
@@ -33,7 +36,7 @@ public class RoachSpawner implements Spawner {
 				--this.ticksUntilNextFoodSpawn;
 				if (this.ticksUntilNextFoodSpawn <= 0) {
 					this.ticksUntilNextFoodSpawn = LaCucarachaConfig.roachSpawnIntervalFood;
-					RandomGenerator random = world.random;
+					RandomGenerator random = (RandomGenerator) world.random;
 					world.getPlayers().forEach(serverPlayerEntity -> {
 						BlockPos blockPos = getRandomSpawnPos(random, serverPlayerEntity, true);
 
@@ -48,7 +51,7 @@ public class RoachSpawner implements Spawner {
 				--this.ticksUntilNextStructureSpawn;
 				if (this.ticksUntilNextStructureSpawn <= 0) {
 					this.ticksUntilNextStructureSpawn = LaCucarachaConfig.roachSpawnIntervalStructures;
-					RandomGenerator random = world.random;
+					RandomGenerator random = (RandomGenerator) world.random;
 					world.getPlayers().forEach(serverPlayerEntity -> {
 						BlockPos blockPos = getRandomSpawnPos(random, serverPlayerEntity, false);
 
@@ -136,7 +139,7 @@ public class RoachSpawner implements Spawner {
 	}
 
 	private int spawnInHouse(ServerWorld world, BlockPos pos) {
-		if (world.getPointOfInterestStorage().count((registryEntry) -> registryEntry.isRegistryKey(PointOfInterestTypes.HOME), pos,
+		if (world.getPointOfInterestStorage().count((registryEntry) -> registryEntry.matches((Predicate<RegistryKey<PointOfInterestType>>) PointOfInterestTypes.HOME), pos,
 													48, PointOfInterestStorage.OccupationStatus.HAS_SPACE) > 4) {
 			List<RoachEntity> list = world.getNonSpectatingEntities(RoachEntity.class, (new Box(pos)).expand(48.0D, 8.0D, 48.0D));
 			if (list.size() < 12) {
